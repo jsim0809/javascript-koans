@@ -159,6 +159,7 @@ describe("About Applying What We Have Learnt", function() {
   it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
   // To find lowest common multiple, you can take all the numbers in your set and find their prime factors.
   // For example, 20 = 2 * 2 * 5 = 2^2 * 5
+  // And so on for 19, 18, 17, etc.
   // Then you take the highest exponent of 2 you found, the highest exponent of 3, and so on for all the prime factors you found.
   // Multiplying them together gives you the LCM.
   // But an even smarter way to do this, which I found online, is to check what the largest exponent of each prime is that fits in your set.
@@ -218,14 +219,43 @@ describe("About Applying What We Have Learnt", function() {
 
   it("should find the difference between the sum of the squares and the square of the sums", function () {
     
-	expect(1).toBe(2);
+  	// This will be a function that takes an array of numbers
+
+  	var differator = function(array) {
+  		var squared = _(array).map(function(x) { return x**2 });
+  		var sumOfSquares = _(squared).reduce(function(memo, x) { return memo + x; }, 0);
+  		var squareOfSums = (_(array).reduce(function(memo, x) { return memo + x; }, 0))**2;
+  		return sumOfSquares-squareOfSums;
+  	}
+
+
+	expect(differator([1,2,3])).toBe(-22);
 
   });
 
   it("should find the 10001st prime", function () {
 
-	expect(1).toBe(2);
+  	// I can't think of a better way to do this, so I'm going to use Sieve of Erasthocenes to reduce a really big array of integers.
+
+  	var isNotAHigherMultipleOf = function(num, factor) {
+  		return !((num !== factor) && (num%factor===0));
+  	}
+
+
+  	var primes = [];
+  	var nums = _.range(2, 200000);
+
+  	while(nums.length > 0) {
+  		firstNumber = nums[0];
+  		nums = _(nums).filter(function(x) { return isNotAHigherMultipleOf(x, firstNumber); })
+  		newPrime = nums.shift();
+  		primes.push(newPrime);
+  	}
+
+  	// Is there any way to replicate "while" functionality in Underscore?
+
+	expect(primes[10000]).toBe(104743);
 
   });
-  
+
 });
