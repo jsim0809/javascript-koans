@@ -154,9 +154,65 @@ describe("About Applying What We Have Learnt", function() {
 
   });
 
-  it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
 
-	expect(1).toBe(2);      
+
+  it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
+  // To find lowest common multiple, you can take all the numbers in your set and find their prime factors.
+  // For example, 20 = 2 * 2 * 5 = 2^2 * 5
+  // Then you take the highest exponent of 2 you found, the highest exponent of 3, and so on for all the prime factors you found.
+  // Multiplying them together gives you the LCM.
+  // But an even smarter way to do this, which I found online, is to check what the largest exponent of each prime is that fits in your set.
+  // e.g. 2^4 is 16, which is in your set, but 2^5 is 32, which is not in your set.
+  // 3^2 is 9, which is in your set, but 3^3 is 27, which isn't.
+  // for 5, 7, 11, 13, 17, 19, the highest possible exponent is 1.
+  //
+  // This works because it's guaranteed to "cover" the highest possible exponent of every number in your set. So smart!
+  //
+  // So the LCM of all numbers from 1 to 20 = 2^4 * 3^2 * 5 * 7 * 11 * 13 * 17 * 19 = 232792560.
+
+  // Let's try doing that in code.
+
+  var isPrime = function(num) {
+
+	var array = _.range(2,Math.floor(num/2)+1);
+  	var answer = array.reduce(function(memo, x) { 
+  												if(num % x === 0) { return false; } else { return memo; }
+  												}, 
+  												true
+  												);
+
+  	return answer;
+
+  }
+
+  var generateListOfApplicablePrimes = function(num) { 
+  	var primelist = _.range(2,num+1)
+	  	.reduce(function(memo, x) {
+	  		if(isPrime(x)) { 
+	  			memo.push(x); 
+	  		}
+	  		return memo; 
+	  	}, []
+	  	);
+	return primelist;  	
+  }
+
+  var findBiggestExponentUnder20 = function(num) {
+  	var temp = num;
+  	while(temp<=20) {
+  		temp = temp*num;
+  	}
+  	return temp/num;
+  }
+
+  var primeFactors = generateListOfApplicablePrimes(20);
+  var keyFactors = _(primeFactors).map(function(x) { return findBiggestExponentUnder20(x); });
+  var lcm1to20 = _(keyFactors).reduce(function(memo, x) {
+  	return memo * x;
+  }, 1
+  );
+
+	expect(lcm1to20).toBe(232792560);      
     
   });
 
